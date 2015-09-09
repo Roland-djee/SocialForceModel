@@ -1,6 +1,6 @@
 # .gitignore example files #
 ############################
-#*.com
+*~
 #*.class
 #*.dll
 #*.exe
