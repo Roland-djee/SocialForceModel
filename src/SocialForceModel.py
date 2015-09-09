@@ -50,14 +50,6 @@ def RK2O(dt, t, v, r, F):
     v   = v + (k1 + 2.*(k2 + k3) + k4) / 6.
     return v, r
 
-def f_r(t, v):
-    ''' Sets the ODE on the position to be solved by RK4'''
-    return v
-
-def f_v(t, F):
-    ''' Sets the ODE on the velocity to be solved by RK4'''
-    return F
-
 def force_to_destination(v, v_0, r, r_k):
     '''Returns the attractive force to a destination'''
 
