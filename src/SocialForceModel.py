@@ -39,13 +39,13 @@ def RK2O(dt, t, v, r, F):
     k4  = dt * k4
     r   = r + (k1 + 2.*(k2 + k3) + k4) / 6.
 
-    k1  = f_v(t, v, F)
+    k1  = F
     k1  = dt * k1
-    k2  = f_v(t + dt2, v + k1/2., F)
+    k2  = F
     k2  = dt * k2
-    k3  = f_v(t + dt2, v + k2/2., F)
+    k3  = F
     k3  = dt * k3
-    k4  = f_v(t + dt, v + k3, F)
+    k4  = F
     k4  = dt * k4
     v   = v + (k1 + 2.*(k2 + k3) + k4) / 6.
     return v, r
@@ -68,7 +68,7 @@ def force_to_destination(v, v_0, r, r_k):
     # relaxation time [s]
     tau_alpha = 0.5
 
-    return (v_alpha0 - v_alpha) / tau_alpha
+    return (v_alpha0 - v) / tau_alpha
 
 def desired_direction(r_k, r_alpha):
     '''Returns the normalized vector for the desired direction'''
