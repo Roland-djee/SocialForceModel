@@ -24,30 +24,13 @@ def propagate_in_time(dt, t, v, v_0, r, r_k):
     return np.array([v_x, v_y]), np.array([r_x, r_y])
 
 def RK2O(dt, t, v, r, F):
-    '''4th order Runge-Kutta method for second order ODEs'''
+    '''Adapted 4th order Runge-Kutta method for second order ODEs'''
 
     # position
-    dt2 = dt * 0.5 
-    k1  = v
-    k1  = dt * k1
-    k2  = v
-    k2  = dt * k2
-    k3  = v
-    k3  = dt * k3
-    k4  = v
-    k4  = dt * k4
-    r   = r + (k1 + 2.*(k2 + k3) + k4) / 6.
-
+    r = r + dt * v
     # velocity
-    k1  = F
-    k1  = dt * k1
-    k2  = F
-    k2  = dt * k2
-    k3  = F
-    k3  = dt * k3
-    k4  = F
-    k4  = dt * k4
-    v   = v + (k1 + 2.*(k2 + k3) + k4) / 6.
+    v = v + dt * F
+
     return v, r
 
 def force_to_destination(v, v_0, r, r_k):
