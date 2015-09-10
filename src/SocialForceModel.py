@@ -12,7 +12,6 @@ def propagate_in_time(dt, t, v, v_0, r, r_k):
     f_alpha0 = force_to_destination(v, v_0, r, r_k)
 
     # Attractive force to destination
-
     Fx = f_alpha0[0]
     Fy = f_alpha0[1]
     #Fx = -1.
@@ -24,10 +23,10 @@ def propagate_in_time(dt, t, v, v_0, r, r_k):
     v_y, r_y = RK2O(dt, t, v[1], r[1], Fy)
     return np.array([v_x, v_y]), np.array([r_x, r_y])
 
-
 def RK2O(dt, t, v, r, F):
     '''4th order Runge-Kutta method for second order ODEs'''
 
+    # position
     dt2 = dt * 0.5 
     k1  = v
     k1  = dt * k1
@@ -39,6 +38,7 @@ def RK2O(dt, t, v, r, F):
     k4  = dt * k4
     r   = r + (k1 + 2.*(k2 + k3) + k4) / 6.
 
+    # velocity
     k1  = F
     k1  = dt * k1
     k2  = F
@@ -64,7 +64,7 @@ def force_to_destination(v, v_0, r, r_k):
 
 def desired_direction(r_k, r_alpha):
     '''Returns the normalized vector for the desired direction'''
-    return np.array((r_k - r_alpha) / abs(r_k - r_alpha))
+    return (r_k - r_alpha) / np.linalg.norm(r_k - r_alpha)
     
 def define_random_vector(lmax):
     ''' Returns random [x, y] coordinates between [-lmax,lmax)'''
@@ -81,15 +81,16 @@ if __name__ == '__main__':
     #print r_k
 
     # Initial position
-    r_0 = define_random_vector(lmax)
+    r_i = define_random_vector(lmax)
+    v_i = define_random_vector(lmax)
     #print r_0
 
     # Average desired speed [m/s]
     v_0 = 1.5
 
     # Inital conditions 
-    r  = np.array(r_0)
-    v  = np.array([0., -10.]) 
+    r  = np.array(r_i)
+    v  = np.array(v_i) 
     dt = 0.001
     t  = 0.
     
@@ -107,16 +108,16 @@ if __name__ == '__main__':
     while t <= 100.:
         v, r = propagate_in_time(dt, t, v, v_0, r, r_k)
         t = t + dt
-
         
         time.append(t)
         x1.append(r[0])
         y1.append(r[1])
         
-
     plt.plot(x1, y1)
+    plt.arrow(r_i[0], r_i[1], v_i[0], v_i[1], fc="k", ec="k",
+head_width=1, head_length=1)
     plt.plot(r_k[0], r_k[1], 'ro')
-    plt.plot(r_0[0], r_0[1], 'bo')
+    plt.plot(r_i[0], r_i[1], 'bo')
     plt.axis([-lmax, lmax, -lmax, lmax])
     plt.xlabel("x distance [m]")
     plt.ylabel("y distance [m]")
