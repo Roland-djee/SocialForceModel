@@ -85,10 +85,17 @@ def define_random_vector(lmax):
 
 if __name__ == '__main__':
 
-    # world's dimension
-    lmax = 50.
-    # number of agents
-    n_agents = 3
+    # set parameters
+    v_0    = 1.5     # Average desired speed [m/s]
+    V_12_0 = 2.1     # Repulsive potential amplitude [m^2 s^-2]
+    sigma  = 0.3     # Potential damping parameter [m]
+    dt     = 0.001   # Time spacing [s]
+    tmax   = 30.     # Maximum propagation time [s]
+    t      = 0.      # Initial timing [s]
+    time   = np.linspace(0., tmax, int(tmax/dt) + 1) # time grid
+
+    lmax   = 50.     # world's dimension
+    n_agents = 3     # number of agents
 
     # initialize arrays
     r_k   = np.zeros((n_agents,2))
@@ -99,98 +106,52 @@ if __name__ == '__main__':
     r_new = np.zeros((n_agents,2)) 
     v_new = np.zeros((n_agents,2)) 
 
+    x     = np.zeros((len(time)+1,n_agents))
+    y     = np.zeros((len(time)+1,n_agents))
+
     # define destination
     for i in range(n_agents):
         r_k[i] = define_random_vector(lmax)
         r[i]   = define_random_vector(lmax)
         v[i]   = define_random_vector(lmax)
-
+    
+    # Store initial positions and velocities
     r_i = r
     v_i = v
 
-    # Set parameters
-    v_0    = 1.5     # Average desired speed [m/s]
-    V_12_0 = 2.1     # Repulsive potential amplitude [m^2 s^-2]
-    sigma  = 0.3     # Potential damping parameter [m]
-    dt = 0.001       # Time spacing [s]
-    t  = 0.          # Initial timing [s]
-    
-    time = []
+    # Store initial posotions and velocities
+    x[0] = [r_i[i][0] for i in range(n_agents)]
+    y[0] = [r_i[i][1] for i in range(n_agents)]
 
-    x1 = []
-    y1 = []
-    x2 = []
-    y2 = []
-    x3 = []
-    y3 = []
-
-
-    time.append(t)
-    x1.append(r[0][0])
-    y1.append(r[0][1])
-    x2.append(r[1][0])
-    y2.append(r[1][1])
-    x3.append(r[2][0])
-    y3.append(r[2][1])
-
-    #print x1, y1
-    #sys.exit()
-
-    while t <= 20.:
+    counter = 0
+    for t in time:
+        counter +=1
         for i in range(n_agents):
-            
-            #v_ext1  = [v2, v3]
             r_ext  = np.delete(r, i, axis=0)
             r_kext = np.delete(r_k, i, axis=0)
             v_ext  = np.delete(v, i, axis=0)
-            #print 'v_ext', v_ext
             v_new[i], r_new[i]  = propagate_in_time(V_12_0, sigma, dt, t, v[i], v_ext, v_0, r[i], r_ext, r_k[i], r_kext)
-            #print 'new v', v_new
-            #sys.exit()
-            #r_ext1  = [r2, r3]
-            #r_kext1 = [r_k2, r_k3]
 
+        # Update position and velocity
         v  = v_new
         r  = r_new
-        t += dt
 
-        #sys.exit()
-
-        time.append(t)
-        x1.append(r[0][0])
-        y1.append(r[0][1])
-        x2.append(r[1][0])
-        y2.append(r[1][1])
-        x3.append(r[2][0])
-        y3.append(r[2][1])
-
-
-
+        # Store position and velocity
+        x[counter] = [r[i][0] for i in range(n_agents)]
+        y[counter] = [r[i][1] for i in range(n_agents)]
+ 
+ 
+    # Plot 
     for i in range(n_agents):
         plt.plot(r_i[i][0], r_i[i][1], 'bo')
         plt.plot(r_k[i][0], r_k[i][1], 'ro')
-        plt.arrow(r_i[i][0], r_i[i][1], v_i[i][0], v_i[1][1], fc="k", ec="k", head_width=1, head_length=1)
-        plt.plot(r, y1, 'r-')
+        plt.arrow(r_i[i][0], r_i[i][1], v_i[i][0], v_i[i][1], fc="k", ec="k", head_width=1, head_length=1)
+
+    plt.plot(x, y, 'r-')
 
     plt.axis([-lmax, lmax, -lmax, lmax])
     plt.xlabel("x distance [m]")
     plt.ylabel("y distance [m]")
     plt.grid(True)
 
-    plt.show()
-
-
-
-    #plt.plot(x1, y1, 'r-')
-    #plt.plot(x2, y2, 'b-')
-    #plt.plot(x3, y3, 'g-')
-    #plt.arrow(r_i1[0], r_i1[1], v_i1[0], v_i1[1], fc="k", ec="k", head_width=1, head_length=1)
-    #plt.arrow(r_i2[0], r_i2[1], v_i2[0], v_i2[1], fc="k", ec="k", head_width=1, head_length=1)
-    #plt.arrow(r_i3[0], r_i3[1], v_i3[0], v_i3[1], fc="k", ec="k", head_width=1, head_length=1)
-    #plt.plot(r_k1[0], r_k1[1], 'ro')
-    #plt.plot(r_k2[0], r_k2[1], 'ro')
-    #plt.plot(r_k3[0], r_k3[1], 'ro')
-    #plt.plot(r_i1[0], r_i1[1], 'bo')
-    #plt.plot(r_i2[0], r_i2[1], 'bo')
-    #plt.plot(r_i3[0], r_i3[1], 'bo')
     plt.show()
