@@ -5,8 +5,13 @@ import numpy as np
 import scipy as sp
 import sys
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
-def propagate_in_time(V_12_0, sigma, dt, t, v, v_ext, v_0, r, r_ext, r_k, r_kext):
+from parameters import *
+from forces import *
+
+def propagate_in_time(V_12_0, sigma, dt, t, v, v_ext, v_0, r, r_ext, r_k, r_kext, wall_begin, wall_end, U_0, R_0):
+#def propagate_in_time(V_12_0, sigma, dt, t, v, v_ext, v_0, r, r_ext, r_k, r_kext):
     '''Propagates the motion of a single pedestrian in time using adapted
     RK4 method'''
 
@@ -14,10 +19,17 @@ def propagate_in_time(V_12_0, sigma, dt, t, v, v_ext, v_0, r, r_ext, r_k, r_kext
     f_alpha0     = force_to_destination(v, v_0, r, r_k)
     # define pedestrian-pedestrian repulsive force
     f_alpha_beta = pedestrian_repulsive_force(V_12_0, sigma, dt, v_ext, r, r_ext, r_k, r_kext)
+    #print 'wall_begin, wall_end, U_0, R_0, r',wall_begin, wall_end, U_0, R_0, r
+    #sys.exit()
+
+    B, f_alpha_B    = wall_repulsive_force(wall_begin, wall_end, U_0, R_0, r)
+    #print f_alpha_B
 
     # Attractive force to destination
-    Fx = f_alpha0[0] + f_alpha_beta[0]
-    Fy = f_alpha0[1] + f_alpha_beta[1]
+    Fx = f_alpha0[0] + f_alpha_beta[0] + f_alpha_B[0]
+    Fy = f_alpha0[1] + f_alpha_beta[1] + f_alpha_B[1]
+    #Fx = f_alpha0[0] + f_alpha_beta[0]
+    #Fy = f_alpha0[1] + f_alpha_beta[1]
 
     # propagate in x
     v_x, r_x = RK2O(dt, t, v[0], r[0], Fx)
@@ -33,69 +45,22 @@ def RK2O(dt, t, v, r, F):
     v = v + dt * F
     return v, r
 
-def pedestrian_repulsive_force(V_12_0, sigma, dt, v_ext, r, r_ext, r_k, r_kext):
-    ''' Returns the repulsive force between pedestrians'''
-    F = np.zeros((len(r_ext),2))
-    amplitude   = V_12_0 / sigma
-
-    for i in range(len(r_ext)):
-        b           = ellipse_semiminor_axis(dt, v_ext[i], r, r_ext[i], r_kext[i])
-        n12         = desired_direction(r, r_ext[i])
-        expo_factor = exp(- b / sigma)
-        force = amplitude * expo_factor * n12
-        F[i] = force
-
-    return np.sum(F, axis=0)
 
 
-def ellipse_semiminor_axis(dt, v_ext, r, r_ext, r_kext):
-    ''' Returns the semiminor axis of the ellipse force field defined 
-    in the repulsive social force'''
-    r12    = r - r_ext
-    b      = np.linalg.norm(r12)
-    e_beta = desired_direction(r_kext, r_ext)
-    v_beta = np.linalg.norm(v_ext) * dt
-    b      = b + np.linalg.norm(r12 - v_beta * e_beta)
-    b      = sqrt(b**2 - v_beta**2) * 0.5
-    return b
+# initialization function: plot the background of each frame
+def init():
+    line.set_data([], [])
+    return line,
 
-def force_to_destination(v, v_0, r, r_k):
-    '''Returns the attractive force to a destination'''
+# animation function.  This is called sequentially
+def animate(j, w, z):
+    #x = np.linspace(0, 2, 1000)
+    #y = np.sin(2 * np.pi * (x - 0.01 * i))
 
-    # define the desired direction
-    e_alpha  = desired_direction(r_k, r)
-    # define the desired velocity
-    v_alpha0 = e_alpha * v_0
-    # relaxation time [s]
-    tau_alpha = 0.5
+    t = dt * j
+    print j, w, z
+    sys.exit()
 
-    return (v_alpha0 - v) / tau_alpha
-
-def desired_direction(r_k, r_alpha):
-    '''Returns the normalized vector for the desired direction'''
-    #print 'r_k', r_k
-    #print 'r_alpha', r_alpha
-    #sys.exit()
-    return (r_k - r_alpha) / np.linalg.norm(r_k - r_alpha)
-    
-def define_random_vector(lmax):
-    ''' Returns random [x, y] coordinates between [-lmax,lmax)'''
-    r = (np.random.rand(2) * 2. - 1. ) * lmax / 2.
-    return r
-
-if __name__ == '__main__':
-
-    # set parameters
-    v_0    = 1.5     # Average desired speed [m/s]
-    V_12_0 = 2.1     # Repulsive potential amplitude [m^2 s^-2]
-    sigma  = 0.3     # Potential damping parameter [m]
-    dt     = 0.001   # Time spacing [s]
-    tmax   = 30.     # Maximum propagation time [s]
-    t      = 0.      # Initial timing [s]
-    time   = np.linspace(0., tmax, int(tmax/dt) + 1) # time grid
-
-    lmax   = 50.     # world's dimension
-    n_agents = 3     # number of agents
 
     # initialize arrays
     r_k   = np.zeros((n_agents,2))
@@ -120,6 +85,63 @@ if __name__ == '__main__':
     v_i = v
 
     # Store initial posotions and velocities
+    x = r_i[0][0]
+    y = r_i[0][1]
+
+
+
+    for i in range(n_agents):
+        r_ext  = np.delete(r, i, axis=0)
+        r_kext = np.delete(r_k, i, axis=0)
+        v_ext  = np.delete(v, i, axis=0)
+        v_new[i], r_new[i]  = propagate_in_time(V_12_0, sigma, dt, t, v[i], v_ext, v_0, r[i], r_ext, r_k[i], r_kext)
+
+    # Update position and velocity
+    v  = v_new
+    r  = r_new
+
+    # Store position and velocity
+    x = r[0][0]
+    y = r[0][1]
+
+
+    #print x,y
+    
+
+    line.set_data(x, y)
+    
+    return line,
+
+
+if __name__ == '__main__':
+
+    # initialize arrays
+    r_k   = np.zeros((n_agents,2))
+    r     = np.zeros((n_agents,2)) 
+    v     = np.zeros((n_agents,2)) 
+    r_i   = np.zeros((n_agents,2)) 
+    v_v   = np.zeros((n_agents,2)) 
+    r_new = np.zeros((n_agents,2)) 
+    v_new = np.zeros((n_agents,2)) 
+
+    x     = np.zeros((len(time)+1,n_agents))
+    y     = np.zeros((len(time)+1,n_agents))
+
+    # define destination
+    for i in range(n_agents):
+        r_k[i] = define_random_vector(lmax)
+        r[i]   = define_random_vector(lmax)
+        v[i]   = define_random_vector(lmax)
+
+    r_k[0] = [3., -1.]
+    r[0]   = [-3., 2.]
+    v[0]   = [0., 1.]
+
+    # Store initial positions and velocities
+    r_i = r
+    v_i = v
+
+    # Store initial posotions and velocities
     x[0] = [r_i[i][0] for i in range(n_agents)]
     y[0] = [r_i[i][1] for i in range(n_agents)]
 
@@ -130,7 +152,8 @@ if __name__ == '__main__':
             r_ext  = np.delete(r, i, axis=0)
             r_kext = np.delete(r_k, i, axis=0)
             v_ext  = np.delete(v, i, axis=0)
-            v_new[i], r_new[i]  = propagate_in_time(V_12_0, sigma, dt, t, v[i], v_ext, v_0, r[i], r_ext, r_k[i], r_kext)
+            v_new[i], r_new[i]  = propagate_in_time(V_12_0, sigma, dt, t, v[i], v_ext, v_0, r[i], r_ext, r_k[i], r_kext, wall_begin, wall_end, U_0, R_0)
+            #v_new[i], r_new[i]  = propagate_in_time(V_12_0, sigma, dt, t, v[i], v_ext, v_0, r[i], r_ext, r_k[i], r_kext)
 
         # Update position and velocity
         v  = v_new
@@ -145,13 +168,32 @@ if __name__ == '__main__':
     for i in range(n_agents):
         plt.plot(r_i[i][0], r_i[i][1], 'bo')
         plt.plot(r_k[i][0], r_k[i][1], 'ro')
-        plt.arrow(r_i[i][0], r_i[i][1], v_i[i][0], v_i[i][1], fc="k", ec="k", head_width=1, head_length=1)
+        plt.arrow(r_i[i][0], r_i[i][1], v_i[i][0], v_i[i][1], fc="k", ec="k", head_width=0.2, head_length=0.4)
+
+
+    plt.plot([wall_begin[0], wall_end[0]], [wall_begin[1], wall_end[1]], 'black', linewidth=5)
 
     plt.plot(x, y, 'r-')
 
-    plt.axis([-lmax, lmax, -lmax, lmax])
+
+    plt.axis([-lmax/10, lmax/10, -lmax/10, lmax/10])
     plt.xlabel("x distance [m]")
     plt.ylabel("y distance [m]")
     plt.grid(True)
+
+    plt.show()
+    sys.exit()
+    
+
+    # First set up the figure, the axis, and the plot element we want to animate
+    fig = plt.figure()
+    ax = plt.axes(xlim=(-lmax/5, lmax/5), ylim=(-lmax/5, lmax/5))
+    line, = ax.plot([], [], lw=2)
+
+    w= 1
+    z=10
+
+    anim = animation.FuncAnimation(fig, animate(i,w,z), np.arange(0, 1000), init_func=init,
+                               interval=20, blit=True)
 
     plt.show()
