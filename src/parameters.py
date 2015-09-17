@@ -13,4 +13,12 @@ t      = 0.      # Initial timing [s]
 time   = np.linspace(0., tmax, int(tmax/dt) + 1) # time grid
 
 lmax   = 50.     # world's dimension
-n_agents = 1     # number of agents
+n_agents = 3     # number of agents
+
+wall_begin = np.array([0.,0.]) # Wall beginning corrdinates
+wall_end   = np.array([2.,0.]) # Wall end coordinates
+
+U_0 = 10.        # Wall repulsive potential amplitude [m^2 s^2]
+R_0 = 0.2        # Wall damping parameter [m]
+
+
