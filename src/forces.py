@@ -3,6 +3,7 @@ from __future__ import division
 from math import *
 import numpy as np
 import scipy as sp
+import matplotlib.pyplot as plt
 
 from vectors import *
 
@@ -20,10 +21,13 @@ def pedestrian_repulsive_force(V_12_0, sigma, dt, v_ext, r, r_ext, r_k, r_kext):
 
     return np.sum(F, axis=0)
 
-def wall_repulsive_force():
-    return
+def wall_repulsive_force(wall_begin, wall_end, U_0, R_0, r):
+    B      = get_closest_point_to_segment(wall_begin, wall_end, r)
+    n      = desired_direction(r, B)
+    factor = U_0 / R_0
+    expo   = exp(-np.linalg.norm(r - B) / R_0)
+    return B, factor * expo * n
     
-
 def ellipse_semiminor_axis(dt, v_ext, r, r_ext, r_kext):
     ''' Returns the semiminor axis of the ellipse force field defined 
     in the repulsive social force'''
@@ -46,3 +50,23 @@ def force_to_destination(v, v_0, r, r_k):
     tau_alpha = 0.5
 
     return (v_alpha0 - v) / tau_alpha
+
+#if __name__ == '__main__':
+    
+#    wall_begin = np.array([0.,0.])
+#    wall_end   = np.array([2.,0.])
+
+#    U_0 = 10. 
+#    R_0 = 0.2
+
+#    r1 = np.array([0.5, 1.])
+
+#    B, f = wall_repulsive_force(wall_begin, wall_end, U_0, R_0, r1)
+
+#    plt.arrow(wall_begin[0], wall_begin[1], wall_end[0], wall_end[1], 'blue', linewidth=4)
+#    plt.plot(r1[0], r1[1], 'ro')
+#    plt.plot(B[0], B[1], 'go')
+#    plt.arrow(B[0], B[1], f[0] , f[1] , head_width=0.05, head_length=0.1, fc='k', ec='k')
+#    plt.axis('equal')
+#    plt.axis([-5, 5, -5, 5])
+#    plt.show()
