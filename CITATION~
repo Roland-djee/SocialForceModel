@@ -1,0 +1,22 @@
+How to cite
+===========
+
+Decoherence is free to use under the GNU General Public License.
+See LICENSE file for more details.
+
+If you use any part of the code in a publication,
+please cite it as follows:
+
+R. Guichard, Decoherence: Fortran library for spin decoherence
+http://www.github/UCLGuichard/CCPQ.
+
+Here is the BibTeX entry:
+
+```text
+@misc{DECOHERENCE,
+  title = {Decoherence: Fortran library for spin decoherence},
+  author = {Guichard, R.},
+  howpublished = {\url{http://www.github/UCLGuichard/CCPQ}},
+  year = {2014}
+}
+```
