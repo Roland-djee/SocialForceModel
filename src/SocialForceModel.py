@@ -15,15 +15,23 @@ def propagate_in_time(V_12_0, sigma, dt, t, v, v_ext, v_0, r, r_ext, r_k, r_kext
     '''Propagates the motion of a single pedestrian in time using adapted
     RK4 method'''
 
+    e = desired_direction(r_k, r)
     # define the force "attraction to destination"
     f_alpha0     = force_to_destination(v, v_0, r, r_k)
+    w            = field_of_vision(e, f_alpha0, phi, c)
+    f_alpha0     = w * f_alpha0
     # define pedestrian-pedestrian repulsive force
     f_alpha_beta = pedestrian_repulsive_force(V_12_0, sigma, dt, v_ext, r, r_ext, r_k, r_kext)
+    w            = field_of_vision(e, -f_alpha_beta, phi, c)
+    f_alpha_beta = w * f_alpha_beta    
+
     #print 'wall_begin, wall_end, U_0, R_0, r',wall_begin, wall_end, U_0, R_0, r
     #sys.exit()
 
-    B, f_alpha_B    = wall_repulsive_force(wall_begin, wall_end, U_0, R_0, r)
+    B, f_alpha_B = wall_repulsive_force(wall_begin, wall_end, U_0, R_0, r)
     #print f_alpha_B
+    w3           = field_of_vision(e, -f_alpha_B, phi, c)
+    f_alpha_B    = w3 * f_alpha_B
 
     # Attractive force to destination
     Fx = f_alpha0[0] + f_alpha_beta[0] + f_alpha_B[0]
