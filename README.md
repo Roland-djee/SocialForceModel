@@ -41,7 +41,7 @@ python SocialForceModel.py
 
 If all went well, you should now have a test case running.
 
-***SocialForceModel has been tested on Linux***
+***SocialForceModel has been developed and tested under Windows and Eclipse IDE with Python 2.7 Interpreter and Anaconda***
 
 Usage
 -----
