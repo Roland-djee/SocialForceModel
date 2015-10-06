@@ -3,13 +3,13 @@ Social Force Model for Pedestrian Dynamics
 
 This code is intended to simulate the dynamics of pedestrians.
 
-***Last modified version 08/09/2015***
+***Last modified version 06/10/2015***
 
 Social Force Model - Python library for pedestrian dynamics
 ===========================================================
 
-Solves for the dynamics of pedestrians using a so-called "social force
-model" based on the article [Helbing & Molnar Phys. Rev. E 51, 4282 (1995)]
+Microsimulator solving for the dynamics of pedestrians using a so-called "Social Force
+Model" based on the article [Helbing & Molnar Phys. Rev. E 51, 4282 (1995)]
 
 - Includes .
 
