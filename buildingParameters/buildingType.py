@@ -11,7 +11,3 @@ class buildingType:
         elif (buildingType == 'office'):
             self.coordinates = np.array(coordinates)
             self.color = 'grey' 
-
-        
-        
-            
