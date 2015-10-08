@@ -12,7 +12,7 @@ tmax   = 10.     # Maximum propagation time [s]
 t      = 0.      # Initial timing [s]
 time   = np.linspace(0., tmax, int(tmax/dt) + 1) # time grid
 
-lmax   = 100.     # world's dimension
+lmax   = 100.     # worldParameters's dimension
 n_agents = 1     # number of agents
 
 wall_begin = np.array([-1.,0.]) # Wall beginning corrdinates
