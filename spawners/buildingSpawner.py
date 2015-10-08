@@ -1,10 +1,9 @@
 #!/usr/bin/python
 from buildingParameters.buildingDimensions import *
 from buildingParameters.buildingType import *
-# from world.worldDimensions import *
+from worldParameters.worldDimensions import *
 import matplotlib.pyplot as plt
 import matplotlib
-
 
 def spawnEnvironment():
 	walls     = spawnWalls()
@@ -25,7 +24,6 @@ def spawnWalls():
 	return walls
 	
 # walls, buildings = spawnEnvironment()
-
 # fig = plt.figure()
 # ax = fig.add_subplot(111)
 # for i in range(nbWalls):
@@ -35,7 +33,7 @@ def spawnWalls():
 # 	build1 = matplotlib.patches.Rectangle((buildings[i].coordinates[0][0],buildings[i].coordinates[0][1]), 20, 20, color=buildings[i].color)
 # 	ax.add_patch(build1)
 
-# plt.xlim([-50, 50])
-# plt.ylim([-50, 50])
+# plt.xlim([-worldLength, worldLength])
+# plt.ylim([-worldWidth, worldWidth])
 # plt.show()
 
