@@ -20,20 +20,15 @@ class Test(unittest.TestCase):
     def tearDown(self):
         pass
 
-
     def testBuildingTypeForAWall(self):
         corner1 = np.array([-5., -2., 0.])
         corner2 = np.array([2., 5., 0.])
         wallCoordinates = np.array([corner1, corner2])   
         returnedWall = buildingType('wall', *wallCoordinates)
-        errorMessage = "Wrong input value for x1"
-        self.assertEqual(returnedWall.x1, corner1[0], errorMessage)
-        errorMessage = "Wrong input value for y1"
-        self.assertEqual(returnedWall.y1, corner1[1], errorMessage)
-        errorMessage = "Wrong input value for x1"
-        self.assertEqual(returnedWall.x2, corner2[0], errorMessage)
-        errorMessage = "Wrong input value for x1"
-        self.assertEqual(returnedWall.y2, corner2[1], errorMessage)
+        errorMessage = "Wrong input value for corner1"
+        self.assertEqual(returnedWall.endPoint1.all(), corner1.all(), errorMessage)
+        errorMessage = "Wrong input value for corner2"
+        self.assertEqual(returnedWall.endPoint2.all(), corner2.all(), errorMessage)
         pass
     
     def testBuildingTypeForAnOffice(self):
@@ -43,22 +38,14 @@ class Test(unittest.TestCase):
         corner4 = np.array([40., 20., 0.])
         OfficesCoordinates = np.array([corner1, corner2, corner3, corner4])   
         returnedOffice = buildingType('office', *OfficesCoordinates)
-        errorMessage = "Wrong input value for x1"
-        self.assertEqual(returnedOffice.corner1x, corner1[0], errorMessage)
-        errorMessage = "Wrong input value for y1"
-        self.assertEqual(returnedOffice.corner1y, corner1[1], errorMessage)
-        errorMessage = "Wrong input value for x1"
-        self.assertEqual(returnedOffice.corner2x, corner2[0], errorMessage)
-        errorMessage = "Wrong input value for x1"
-        self.assertEqual(returnedOffice.corner2y, corner2[1], errorMessage)
-        errorMessage = "Wrong input value for x1"
-        self.assertEqual(returnedOffice.corner3x, corner3[0], errorMessage)
-        errorMessage = "Wrong input value for y1"
-        self.assertEqual(returnedOffice.corner3y, corner3[1], errorMessage)
-        errorMessage = "Wrong input value for x1"
-        self.assertEqual(returnedOffice.corner4x, corner4[0], errorMessage)
-        errorMessage = "Wrong input value for x1"
-        self.assertEqual(returnedOffice.corner4y, corner4[1], errorMessage)
+        errorMessage = "Wrong input value for corner1"
+        self.assertEqual(returnedOffice.corner1.all(), corner1.all(), errorMessage)
+        errorMessage = "Wrong input value for corner2"
+        self.assertEqual(returnedOffice.corner2.all(), corner2.all(), errorMessage)
+        errorMessage = "Wrong input value for corner3"
+        self.assertEqual(returnedOffice.corner3.all(), corner3.all(), errorMessage)
+        errorMessage = "Wrong input value for corner4"
+        self.assertEqual(returnedOffice.corner4.all(), corner4.all(), errorMessage)
         pass
     
 
