@@ -1,0 +1,30 @@
+{
+	"PedestrianSimulator":{
+		"version":0.1,
+		"date":{
+			"day":9,
+			"month":10,
+			"year":2015			
+		},
+		"data":{
+			"timePropagationParameters":{
+				"description":"",
+				"dt":{
+					"value":0.001,
+					"description":"Time spacing [s]"
+				},
+				"tmax":{
+					"description":"Maximum propagation time [s]",
+					"value":10.0
+				},
+				"t":{
+					"value":0.0,
+					"description":"Initial timing [s]"
+				}				
+			}
+		
+		}
+
+	}
+
+}
