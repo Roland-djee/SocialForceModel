@@ -1,6 +1,10 @@
 #!/usr/bin/python
 import numpy as np
 
+# set parameters for pedestrian-wall repulsive forces from [Helbing & Molnar Phys. Rev. E 51, 4282 (1995)]
+U0 = 10.        # Wall repulsive potential amplitude [m^2 s^2]
+R0 = 0.2        # Wall damping parameter [m]
+
 nbWalls = 2
 
 corner1 = np.array([-5., -2., 0.])
