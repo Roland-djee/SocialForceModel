@@ -19,17 +19,17 @@ def spawnRandomPedestrians():
         pedestrian[i] = pedestrianType(pedestrian, position, velocity, target)
     return pedestrian
 
-# pedestrian = spawnRandomPedestrians()
+pedestrian = spawnRandomPedestrians()
 
 
-# fig = plt.figure()
-# ax = fig.add_subplot(111)
-# for i in range(nbPedestrians):
-#     print pedestrian[1].position[0], pedestrian[1].position[1]
-#     plt.plot([pedestrian[i].position[0]],[pedestrian[i].position[1]], 'bo')
+fig = plt.figure()
+ax = fig.add_subplot(111)
+for i in range(nbPedestrians):
+    print pedestrian[1].position[0], pedestrian[1].position[1]
+    plt.plot([pedestrian[i].position[0]],[pedestrian[i].position[1]], 'bo')
 
-# plt.xlim([-worldLength, worldLength])
-# plt.ylim([-worldWidth, worldWidth])
-# plt.show()
+plt.xlim([-worldLength, worldLength])
+plt.ylim([-worldWidth, worldWidth])
+plt.show()
 
         
