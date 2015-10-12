@@ -9,13 +9,10 @@ from buildingParameters.buildingType import *
 
 import numpy as np
 
-
 class Test(unittest.TestCase):
-
 
     def setUp(self):
         pass
-
 
     def tearDown(self):
         pass
@@ -48,8 +45,6 @@ class Test(unittest.TestCase):
         self.assertEqual(returnedOffice.corner4.all(), corner4.all(), errorMessage)
         pass
     
-
-
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testBuildingTypeForAOffice']
     unittest.main()
