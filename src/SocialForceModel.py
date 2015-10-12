@@ -54,6 +54,8 @@ def RK2O(dt, t, v, r, F):
     return v, r
 
 if __name__ == '__main__':
+    
+    
 
     # initialize arrays
     r_k   = np.zeros((n_agents,2))
