@@ -12,7 +12,8 @@ Microsimulator solving for the free-space dynamics of pedestrians using a so-cal
 Model" based on the article [Helbing & Molnar Phys. Rev. E 51, 4282 (1995)]. It includes the possibility 
 to set a crude model of environment using defined walls and buildings.
 
-- Includes .
+- Includes JSON user interface for time-propagation and environmental settings.
+- Includes pedestrian dynamics by solving time-dependent "Social Force Model" equations.
 
 Installation
 ============
