@@ -1,7 +1,7 @@
 Social Force Model for Pedestrian Dynamics 
 ==========================================
 
-This code is intended to simulate the dynamics of pedestrians.
+This code is intended to simulate the coupled dynamics of pedestrians and Complete Autonomous Vehicles (CAV) in a bespoke free-space environment. 
 
 ***Last modified version 12/10/2015***
 
