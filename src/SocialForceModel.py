@@ -10,6 +10,10 @@ from vectors import *
 from parameters import *
 from forces import *
 
+from spawners.buildingSpawner import *
+from spawners.pedestrianSpawner import *
+
+
 def propagate_in_time(V_12_0, sigma, dt, t, v, v_ext, v_0, r, r_ext, r_k, r_kext, wall_begin, wall_end, U_0, R_0):
 #def propagate_in_time(V_12_0, sigma, dt, t, v, v_ext, v_0, r, r_ext, r_k, r_kext):
     '''Propagates the motion of a single pedestrian in time using adapted
@@ -55,7 +59,10 @@ def RK2O(dt, t, v, r, F):
 
 if __name__ == '__main__':
     
-    
+    pedestrian = spawnRandomPedestrians()
+    walls, buildings = spawnEnvironment()
+    propagate_in_time(pedestrian, walls, buildings)
+    sys.exit()
 
     # initialize arrays
     r_k   = np.zeros((n_agents,2))
