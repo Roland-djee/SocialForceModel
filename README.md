@@ -76,8 +76,7 @@ Version
 History
 =======
 
-SocialForceModel is based on the seminar work by Helbing and coworkers 
-cited above.
+SocialForceModel is based on the work by Helbing and coworkers cited above.
 
 Acknowledgements
 ================
