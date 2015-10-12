@@ -3,7 +3,6 @@ import numpy as np
 from pedestrianParameters.pedestrianSettings import *
 from pedestrianParameters.pedestrianType import pedestrianType
 from worldParameters.worldDimensions import *
-from worldDimensions import worldWidth
 
 def spawnRandomPedestrians():
     pedestrian = [None] * nbPedestrians
