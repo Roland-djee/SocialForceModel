@@ -7,6 +7,7 @@ import unittest
 
 import matplotlib.pyplot as plt
 
+from worldParameters.worldDimensions import *
 from pedestrianParameters.pedestrianSettings import *
 from spawners.pedestrianSpawner import *
 
