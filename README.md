@@ -3,13 +3,14 @@ Social Force Model for Pedestrian Dynamics
 
 This code is intended to simulate the dynamics of pedestrians.
 
-***Last modified version 06/10/2015***
+***Last modified version 12/10/2015***
 
 Social Force Model - Python library for pedestrian dynamics
 ===========================================================
 
-Microsimulator solving for the dynamics of pedestrians using a so-called "Social Force
-Model" based on the article [Helbing & Molnar Phys. Rev. E 51, 4282 (1995)]
+Microsimulator solving for the free-space dynamics of pedestrians using a so-called "Social Force
+Model" based on the article [Helbing & Molnar Phys. Rev. E 51, 4282 (1995)]. It includes the possibility 
+to set a crude model of environment using defined walls and buildings.
 
 - Includes .
 
@@ -20,6 +21,7 @@ Requirements:
 
 - Git
 - Python and Numpy, Scipy dependencies
+- JSON
 
 The following instructions are for a Unix-like environment without 
 root privileges.
@@ -41,7 +43,7 @@ python SocialForceModel.py
 
 If all went well, you should now have a test case running.
 
-***SocialForceModel has been developed and tested under Windows and Eclipse IDE with Python 2.7 Interpreter and Anaconda***
+***SocialForceModel has been developed and tested under Windows and Eclipse IDE with Python 2.7 and Anaconda interpreters.***
 
 Usage
 -----
