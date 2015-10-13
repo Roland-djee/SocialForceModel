@@ -22,11 +22,11 @@ class Test(unittest.TestCase):
         pass
 
 
-    def testPedestrianSpawnerWithRandomlyPlacedPedestrians(self):
+    def testPedestrianSpawnerWithRandomlyPlacedStandardPedestrians(self):
         pedestrian = spawnRandomPedestrians()
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        for i in range(nbPedestrians):
+        for i in range(nbStandardPedestrians):
             plt.plot([pedestrian[i].position[0]],[pedestrian[i].position[1]], 'bo')
         plt.xlim([-worldLength, worldLength])
         plt.ylim([-worldWidth, worldWidth])
