@@ -1,5 +1,7 @@
 #!/usr/bin/python
+
 import numpy as np
+
 from pedestrianParameters.pedestrianSettings import *
 from pedestrianParameters.standardPedestrian import *
 from worldParameters.worldDimensions import *
@@ -14,8 +16,8 @@ def spawnRandomPedestrians():
         target      = (np.random.rand(3) * 2. - 1.)
         target[0]   = target[0] * worldLength
         target[1]   = target[1] * worldWidth
-        standardPedestrians[i] = standardPedestrian(standardPedestrian, position, velocity, target)
-    return standardPedestrians
+        standardPedestrians[i] = standardPedestrian(standardPedestrian, i, position, velocity, target)
+    return np.array(standardPedestrians)
 
 pedestrians = spawnRandomPedestrians()
 
