@@ -5,16 +5,32 @@ import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
 
+from spawners.pedestrianSpawner import *
 from pedestrianParameters.pedestrianSettings import *
 from propagateParameters import *
-
-# from vectors import *
+from mathlib.ellipse import ellipseSemiMinorAxis
 
 def computePedPedRepulsiveForce(pedestrians):
     ''' Returns the repulsive force between pedestrians'''
-    my_map = map(lambda pedestrian: pedestrian.position.sum(), pedestrians) 
-    print pedestrians
-    print my_map
+    externalVelocities, externalPositions, externalTargets = extractExternalVariables(pedestrians, 1)
+    semiMinorAxes = [ellipseSemiMinorAxis(dt, eV, pedestrians[1].position, eP, eT) for eV, eP, eT in zip(externalVelocities, externalPositions, externalTargets)] 
+    print semiMinorAxes
+    return
+    
+def  extractExternalVariables(pedestrians, i):
+    ''' Extract the nbPedestrian-1 other variables necessary'''
+    excludingPedestrian = 'Pedestrian' + str(i)
+    externalVelocities = [pedestrian.velocity for pedestrian in pedestrians if pedestrian.id != excludingPedestrian]
+    externalPositions  = [pedestrian.position for pedestrian in pedestrians if pedestrian.id != excludingPedestrian]
+    externalTargets    = [pedestrian.target for pedestrian in pedestrians if pedestrian.id != excludingPedestrian]
+    return externalVelocities, externalPositions, externalTargets
+    
+pedestrians      = spawnRandomPedestrians()
+print [pedestrians[i].id for i in range(10)]
+print [pedestrians[i].velocity for i in range(10)]
+print [pedestrians[i].position for i in range(10)]
+print [pedestrians[i].target for i in range(10)]
+computePedPedRepulsiveForce(pedestrians)
     
     
     
@@ -29,7 +45,7 @@ def computePedPedRepulsiveForce(pedestrians):
     
 
 #     return np.sum(F, axis=0)
-    return 0. 
+#     return 0. 
 
 
 
@@ -40,16 +56,7 @@ def computePedPedRepulsiveForce(pedestrians):
 #     expo   = exp(-np.linalg.norm(r - B) / R_0)
 #     return B, factor * expo * n
 #     
-# def ellipse_semiminor_axis(dt, v_ext, r, r_ext, r_kext):
-#     ''' Returns the semiminor axis of the ellipse force field defined 
-#     in the repulsive social force'''
-#     r12    = r - r_ext
-#     b      = np.linalg.norm(r12)
-#     e_beta = desired_direction(r_kext, r_ext)
-#     v_beta = np.linalg.norm(v_ext) * dt
-#     b      = b + np.linalg.norm(r12 - v_beta * e_beta)
-#     b      = sqrt(b**2 - v_beta**2) * 0.5
-#     return b
+
 # 
 # def force_to_destination(v, v_0, r, r_k):
 #     '''Returns the attractive force to a destination'''
