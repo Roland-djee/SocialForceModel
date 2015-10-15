@@ -21,7 +21,6 @@ class Test(unittest.TestCase):
     def tearDown(self):
         pass
 
-
     def testPedestrianSpawnerWithRandomlyPlacedStandardPedestrians(self):
         pedestrian = spawnRandomPedestrians()
         fig = plt.figure()
@@ -32,7 +31,6 @@ class Test(unittest.TestCase):
         plt.ylim([-worldWidth, worldWidth])
         plt.show()
         pass
-
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
