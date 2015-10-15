@@ -10,28 +10,36 @@ from pedestrianParameters.pedestrianSettings import *
 from propagateParameters import *
 from mathlib.ellipse import ellipseSemiMinorAxis
 
-def computePedPedRepulsiveForce(pedestrians):
-    ''' Returns the repulsive force between pedestrians'''
-    externalVelocities, externalPositions, externalTargets = extractExternalVariables(pedestrians, 1)
-    semiMinorAxes = [ellipseSemiMinorAxis(dt, eV, pedestrians[1].position, eP, eT) for eV, eP, eT in zip(externalVelocities, externalPositions, externalTargets)] 
-    print semiMinorAxes
-    return
+from mathlib.vectors import *
+
+def computePedestrianTargetAttractiveForce(pedestrians, currentPedestrian):
+    '''Returns the attractive force to a destination'''
+    eAlpha  = normalisedDesiredDirection(pedestrians[currentPedestrian].target, pedestrians[currentPedestrian].position)
+    vAlpha0 = eAlpha * pedestrians[currentPedestrian].desiredVelocity
+    return (vAlpha0 - pedestrians[currentPedestrian].velocity) / pedestrians[currentPedestrian].relaxationTime
+
+def computePedPedRepulsiveForce(pedestrians, currentPedestrian):
+    ''' Returns the repulsive force between all other pedestrians and the current one'''
+    externalVelocities, externalPositions, externalTargets, normalizedAlphaBetaVectors = extractExternalVariables(pedestrians, currentPedestrian)
+    semiMinorAxes = np.array([ellipseSemiMinorAxis(dt, eV, pedestrians[currentPedestrian].position, eP, eT) for eV, eP, eT in zip(externalVelocities, externalPositions, externalTargets)]) 
+    return amplitude * sum([exp(-semiMinorAxes[i]/sigma) * normalizedAlphaBetaVectors[i] for i in range(len(semiMinorAxes))])
     
-def  extractExternalVariables(pedestrians, i):
+def extractExternalVariables(pedestrians, currentPedestrian):
     ''' Extract the nbPedestrian-1 other variables necessary'''
-    excludingPedestrian = 'Pedestrian' + str(i)
+    excludingPedestrian = 'Pedestrian' + str(currentPedestrian)
     externalVelocities = [pedestrian.velocity for pedestrian in pedestrians if pedestrian.id != excludingPedestrian]
     externalPositions  = [pedestrian.position for pedestrian in pedestrians if pedestrian.id != excludingPedestrian]
-    externalTargets    = [pedestrian.target for pedestrian in pedestrians if pedestrian.id != excludingPedestrian]
-    return externalVelocities, externalPositions, externalTargets
+    externalTargets    = [pedestrian.target   for pedestrian in pedestrians if pedestrian.id != excludingPedestrian]
+    normalizedAlphaBetaVectors = [normalisedDesiredDirection(pedestrians[currentPedestrian].position, externalPosition) for externalPosition in externalPositions]
+    return externalVelocities, externalPositions, externalTargets, normalizedAlphaBetaVectors
     
-pedestrians      = spawnRandomPedestrians()
-print [pedestrians[i].id for i in range(10)]
-print [pedestrians[i].velocity for i in range(10)]
-print [pedestrians[i].position for i in range(10)]
-print [pedestrians[i].target for i in range(10)]
-computePedPedRepulsiveForce(pedestrians)
-    
+# pedestrians      = spawnRandomPedestrians()
+# print [pedestrians[i].id for i in range(10)]
+# print [pedestrians[i].velocity for i in range(10)]
+# print [pedestrians[i].position for i in range(10)]
+# print [pedestrians[i].target for i in range(10)]
+# force = computePedPedRepulsiveForce(pedestrians, 5)
+# print force
     
     
 #     F = np.zeros((len(r_ext),2))
