@@ -6,6 +6,10 @@ import scipy as sp
 import sys
 import matplotlib.pyplot as plt
 
+def normalisedDesiredDirection(rk, r):
+    '''Returns the normalized vector from the current position r to the desired direction rk'''
+    return (rk - r) / np.linalg.norm(rk - r)
+
 def field_of_vision(e, f, phi, c):
     ''' Returns the weight factor associated with the field of vision'''
     dot_prod = np.dot(e, f)
