@@ -20,20 +20,14 @@ class Test(unittest.TestCase):
     def testPedestrianTypeWithPedestrian(self):
         pedestrian = 'pedestrian'
         id       = 10  
-        position = np.array([2., 4., 6.]) 
-        velocity = np.array([1., 3., 5.]) 
-        target   = np.array([10., 15., 20.]) 
-        returnedPedestrian = pedestrianType(pedestrian, id, position, velocity, target)
+        initialConditions = 'random'
+        returnedPedestrian = pedestrianType(pedestrian, id, initialConditions)
         errorMessage = "Wrong input value for pedestrian"
         self.assertEqual(returnedPedestrian.type, pedestrian, errorMessage)
         errorMessage = "Wrong input value for id"
         self.assertEqual(returnedPedestrian.id, 'Pedestrian'+str(id), errorMessage)
-        errorMessage = "Wrong input value for position"
-        self.assertEqual(returnedPedestrian.position.all(), position.all(), errorMessage)
-        errorMessage = "Wrong input value for velocity"
-        self.assertEqual(returnedPedestrian.velocity.all(), velocity.all(), errorMessage)
-        errorMessage = "Wrong input value for target"
-        self.assertEqual(returnedPedestrian.target.all(), target.all(), errorMessage)
+        errorMessage = "Wrong input value for initial conditions"
+        self.assertEqual(returnedPedestrian.initialConditions, 'random', errorMessage)
         pass
 
 
