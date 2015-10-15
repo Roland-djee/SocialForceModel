@@ -55,6 +55,7 @@ def computeAllInteractingForces(pedestrians, currentPedestrian, walls, buildings
 #     pedestrianVehicleRepulsiveForce    = computePedVehicleRepulsiveForce()
 #     force = pedestrianPedestrianRepulsiveForce + pedestrianWallRepulsiveForce + pedestrianVehicleRepulsiveForce
 #     return force
+#     print pedestrianPedestrianRepulsiveForce
     force = pedestrianTargetAttractiveForce + pedestrianPedestrianRepulsiveForce
     return force
 
@@ -66,46 +67,50 @@ def RK2O(dt, t, v, r, F):
     v = v + dt * F
     return v, r
 
+def extractPosition(pedestrians):
+    ''' Extract the nbPedestrian-1 other variables necessary'''
+    x = [pedestrian.position[0] for pedestrian in pedestrians]
+    y = [pedestrian.position[1] for pedestrian in pedestrians]
+    return (np.array(x)), (np.array(y))
+
 # walls, buildings = spawnEnvironment()
 pedestrians      = spawnRandomPedestrians()
-currentPedestrian = 5
 
-print pedestrians[currentPedestrian].velocity, pedestrians[currentPedestrian].position
-print pedestrians[currentPedestrian].target
+# pedestrians[0].position = np.array([-5., -5., 0.])
+# pedestrians[1].position = np.array([5., -5., 0.])
+# 
+# pedestrians[0].velocity = np.array([0., 0., 0.])
+# pedestrians[1].velocity = np.array([0., 0., 0.])
+# 
+# 
+# pedestrians[0].target = np.array([5., 5., 0.])
+# pedestrians[1].target = np.array([-5., 5., 0.])
+
+# print pedestrians[].position
+# print pedestrians[].target
 
 figure  = plt.figure()
 axes    = plt.axes(xlim=(-worldLength, worldLength), ylim=(-worldWidth, worldWidth)) 
-for i in range(nbStandardPedestrians):
-    scatter = axes.scatter(pedestrians[i].position[0], pedestrians[i].position[1], color=pedestrians[i].color)
-# scatter = plt.plot(pedestrians[currentPedestrian].target[0], pedestrians[currentPedestrian].target[1])
-scatter = axes.scatter(pedestrians[currentPedestrian].target[0], pedestrians[currentPedestrian].target[1], color='red')
-# scatter, = plt.plot([], [])
-# scatter
-# plt.show()
-# sys.exit()
+# axes    = plt.axes(xlim=(-10, 10), ylim=(-10, 10)) 
+x, y = extractPosition(pedestrians)
+scatter = axes.scatter(x, y, color='red')
 
-# def init():
-# #     scatter.set_data(pedestrians[currentPedestrian].position[0], pedestrians[currentPedestrian].position[1])
-#     scatter = axes.scatter(pedestrians[currentPedestrian].position[0], pedestrians[currentPedestrian].position[1])  
-#     return scatter
+newVelocity = np.zeros((nbStandardPedestrians,3)) 
+newPosition = np.zeros((nbStandardPedestrians,3)) 
 
 def animate(frame):
-#     updatePositions(pedestrians)
     t = time[frame]
-    pedestrians[currentPedestrian].velocity, pedestrians[currentPedestrian].position = propagateInTime(t, pedestrians, currentPedestrian, walls, buildings)
-    newPosition = (pedestrians[currentPedestrian].position[0], pedestrians[currentPedestrian].position[1])
-    scatter.set_offsets(newPosition)
+    for currentPedestrian in range(nbStandardPedestrians):
+        newVelocity[currentPedestrian], newPosition[currentPedestrian] = propagateInTime(t, pedestrians, currentPedestrian, walls, buildings)
+    for currentPedestrian in range(nbStandardPedestrians):
+        pedestrians[currentPedestrian].velocity = newVelocity[currentPedestrian]
+        pedestrians[currentPedestrian].position = newPosition[currentPedestrian]
+    x, y = extractPosition(pedestrians)
+    positions = np.array([x, y])
+    scatter.set_offsets(positions.transpose())
     return scatter
     
-anim=animation.FuncAnimation(figure, animate, frames=len(time), interval=100, blit=True)
-# anim.save('pedestrian.mp4', bitrate=-1, extra_args=['libx264'])
+anim=animation.FuncAnimation(figure, animate, frames=len(time), interval=10, blit=True)
 anim.save('pedestrian.mp4', bitrate=-1)
-# plt.show()
+
 print 'video ok'
-
-sys.exit()
-
-for t in time:
-    pedestrians[currentPedestrian].velocity, pedestrians[currentPedestrian].position = propagateInTime(pedestrians, currentPedestrian, walls, buildings)
-    print pedestrians[currentPedestrian].velocity, pedestrians[currentPedestrian].position
-
