@@ -5,6 +5,7 @@ from buildingParameters.buildingDimensions import *
 from propagateParameters import *
 from spawners.buildingSpawner import *
 from spawners.pedestrianSpawner import *
+from spawners.vehicleSpawner import *
 from forces import *
 from matplotlib import animation
 from matplotlib import pyplot as plt
@@ -74,7 +75,8 @@ def extractPosition(pedestrians):
     return (np.array(x)), (np.array(y))
 
 # walls, buildings = spawnEnvironment()
-pedestrians      = spawnRandomPedestrians()
+pedestrians = spawnRandomPedestrians()
+cars        = spawnRandomCars()
 
 # pedestrians[0].position = np.array([-5., -5., 0.])
 # pedestrians[1].position = np.array([5., -5., 0.])
@@ -94,23 +96,32 @@ axes    = plt.axes(xlim=(-worldLength, worldLength), ylim=(-worldWidth, worldWid
 # axes    = plt.axes(xlim=(-10, 10), ylim=(-10, 10)) 
 x, y = extractPosition(pedestrians)
 scatter = axes.scatter(x, y, color='red')
+for i in range(nbStandardCars):
+    car1 = matplotlib.patches.Ellipse((cars[i].position[0], cars[i].position[1]), cars[i].length, cars[i].width, angle=0., color=cars[i].color)
+    axes.add_patch(car1)
+    
+plt.xlim([-worldLength, worldLength])
+plt.ylim([-worldWidth, worldWidth])
+plt.show()
+
+sys.exit()
 
 newVelocity = np.zeros((nbStandardPedestrians,3)) 
 newPosition = np.zeros((nbStandardPedestrians,3)) 
 
-def animate(frame):
-    t = time[frame]
-    for currentPedestrian in range(nbStandardPedestrians):
-        newVelocity[currentPedestrian], newPosition[currentPedestrian] = propagateInTime(t, pedestrians, currentPedestrian, walls, buildings)
-    for currentPedestrian in range(nbStandardPedestrians):
-        pedestrians[currentPedestrian].velocity = newVelocity[currentPedestrian]
-        pedestrians[currentPedestrian].position = newPosition[currentPedestrian]
-    x, y = extractPosition(pedestrians)
-    positions = np.array([x, y])
-    scatter.set_offsets(positions.transpose())
-    return scatter
-    
-anim=animation.FuncAnimation(figure, animate, frames=len(time), interval=10, blit=True)
-anim.save('pedestrian.mp4', bitrate=-1)
-
-print 'video ok'
+# def animate(frame):
+#     t = time[frame]
+#     for currentPedestrian in range(nbStandardPedestrians):
+#         newVelocity[currentPedestrian], newPosition[currentPedestrian] = propagateInTime(t, pedestrians, currentPedestrian, walls, buildings)
+#     for currentPedestrian in range(nbStandardPedestrians):
+#         pedestrians[currentPedestrian].velocity = newVelocity[currentPedestrian]
+#         pedestrians[currentPedestrian].position = newPosition[currentPedestrian]
+#     x, y = extractPosition(pedestrians)
+#     positions = np.array([x, y])
+#     scatter.set_offsets(positions.transpose())
+#     return scatter
+#     
+# anim=animation.FuncAnimation(figure, animate, frames=len(time), interval=10, blit=True)
+# anim.save('pedestrian.mp4', bitrate=-1)
+# 
+# print 'video ok'
