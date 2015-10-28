@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-nbStandardPedestrians = 10
+nbStandardPedestrians = 20
 
 # set parameters for pedestrian-pedestrian repulsive forces from [Helbing & Molnar Phys. Rev. E 51, 4282 (1995)]
 v0        = 1.5         # Average desired speed [m/s]
