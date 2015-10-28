@@ -6,11 +6,31 @@ import scipy as sp
 import matplotlib.pyplot as plt
 
 from spawners.pedestrianSpawner import *
+from spawners.vehicleSpawner import *
 from pedestrianParameters.pedestrianSettings import *
 from propagateParameters import *
-from mathlib.ellipse import ellipseSemiMinorAxis
+from mathlib.ellipse import ellipseSemiMinorAxis, radiusOfEllipse
 
 from mathlib.vectors import *
+
+def computeCarTargetAttractiveForce(cars, currentCar):
+    '''Returns the attractive force to a destination'''
+    eAlpha  = normalisedDesiredDirection(cars[currentCar].target, cars[currentCar].position)
+    vAlpha0 = eAlpha * cars[currentCar].desiredVelocity
+    return (vAlpha0 - cars[currentCar].velocity) / cars[currentCar].relaxationTime
+
+def computeCarCarRepulsiveForce(cars, currentCar):
+    ''' Returns the repulsive force between all other cars and the current one, discarding the form factor [Anvari et al.]'''
+    externalVelocities, externalPositions, externalTargets, externalIds, normalizedAlphaBetaVectors = extractExternalVariablesForCars(cars, currentCar)
+    radiusesOfEllipses = np.array([radiusOfEllipse(cars[currentCar].position, cars[currentCar].target, eP, cars[currentCar].length, cars[currentCar].width) for eP in externalPositions]) 
+#     print radiusesOfEllipses
+    radiusesOfEllipsesFromExternalCars = [radiusOfEllipse(eP, eT, cars[currentCar].position, cars[eC].length, cars[eC].width) for eP, eT, eC in zip(externalPositions, externalTargets, externalIds)]
+#     print radiusesOfEllipsesFromExternalCars
+    distanceBetweenCentersOfCars = [np.linalg.norm(eC - cars[currentCar].position) for eC in externalPositions]
+    sumOfRadiuses = radiusesOfEllipses + radiusesOfEllipsesFromExternalCars - distanceBetweenCentersOfCars
+#     print sumOfRadiuses
+#     return 
+    return amplitudeAlphaU * sum([exp(sumOfRadiuses[i]/BAlphaU) * normalizedAlphaBetaVectors[i] for i in range(len(sumOfRadiuses))])
 
 def computePedestrianTargetAttractiveForce(pedestrians, currentPedestrian):
     '''Returns the attractive force to a destination'''
@@ -20,11 +40,21 @@ def computePedestrianTargetAttractiveForce(pedestrians, currentPedestrian):
 
 def computePedPedRepulsiveForce(pedestrians, currentPedestrian):
     ''' Returns the repulsive force between all other pedestrians and the current one'''
-    externalVelocities, externalPositions, externalTargets, normalizedAlphaBetaVectors = extractExternalVariables(pedestrians, currentPedestrian)
+    externalVelocities, externalPositions, externalTargets, normalizedAlphaBetaVectors = extractExternalVariablesForPedestrians(pedestrians, currentPedestrian)
     semiMinorAxes = np.array([ellipseSemiMinorAxis(dt, eV, pedestrians[currentPedestrian].position, eP, eT) for eV, eP, eT in zip(externalVelocities, externalPositions, externalTargets)]) 
     return amplitude * sum([exp(-semiMinorAxes[i]/sigma) * normalizedAlphaBetaVectors[i] for i in range(len(semiMinorAxes))])
+
+def extractExternalVariablesForCars(cars, currentCar):
+    ''' Extract the nbCars-1 other variables necessary'''
+    excludingCar = 'standardCar' + str(currentCar)
+    externalVelocities = [car.velocity for car in cars if car.id != excludingCar]
+    externalPositions  = [car.position for car in cars if car.id != excludingCar]
+    externalTargets    = [car.target for car in cars if car.id != excludingCar]
+    externalIds        = [car for car in range(len(cars)) if car != currentCar]
+    normalizedAlphaBetaVectors = [normalisedDesiredDirection(cars[currentCar].position, externalPosition) for externalPosition in externalPositions]
+    return externalVelocities, externalPositions, externalTargets, externalIds, normalizedAlphaBetaVectors
     
-def extractExternalVariables(pedestrians, currentPedestrian):
+def extractExternalVariablesForPedestrians(pedestrians, currentPedestrian):
     ''' Extract the nbPedestrian-1 other variables necessary'''
     excludingPedestrian = 'Pedestrian' + str(currentPedestrian)
     externalVelocities = [pedestrian.velocity for pedestrian in pedestrians if pedestrian.id != excludingPedestrian]
@@ -40,6 +70,9 @@ def extractExternalVariables(pedestrians, currentPedestrian):
 # print [pedestrians[i].target for i in range(10)]
 # force = computePedPedRepulsiveForce(pedestrians, 5)
 # print force
+
+cars      = spawnRandomCars()
+force = computeCarCarRepulsiveForce(cars, 5)
     
     
 #     F = np.zeros((len(r_ext),2))
