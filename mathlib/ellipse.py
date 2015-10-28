@@ -14,3 +14,10 @@ def ellipseSemiMinorAxis(dt, externalVelocity, position, externalPosition, exter
     sBeta      = np.linalg.norm(externalVelocity) * dt
     b          = b + np.linalg.norm(rAlphaBeta - sBeta * eBeta)
     return sqrt(b**2 - sBeta**2) * 0.5
+
+def radiusOfEllipse(position, target, externalPosition, length, width):
+    ''' Returns all the radiuses between the ellipse defining the current car and all others,
+    necessary for the repulsive social force. Variable names follow [Anvari et al.]'''
+    epsilon      = sqrt(length**2 - width**2) / length
+    cosPhiSquare = np.dot(externalPosition - position, target - position) / (np.linalg.norm(externalPosition - position)*np.linalg.norm(target - position))
+    return width / sqrt(1. - epsilon**2 * cosPhiSquare**2) 
