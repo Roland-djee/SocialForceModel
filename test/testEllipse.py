@@ -9,7 +9,7 @@ import numpy as np
 from math import *
 
 from mathlib import *
-from mathlib.ellipse import ellipseSemiMinorAxis
+from mathlib.ellipse import *
 
 class Test(unittest.TestCase):
 
@@ -32,6 +32,18 @@ class Test(unittest.TestCase):
         expectedSemiMinorAxis = sqrt(2.01**2 - 0.01**2) * sqrt(3.) /2.
         errorMessage = "Wrong value for semi-minor axis."
         self.assertAlmostEqual(returnedSemiMinorAxis, expectedSemiMinorAxis, 7, errorMessage)
+        pass
+    
+    def testRadiusOfEllipse(self):
+        position = np.array([2., 2., 2.])
+        target = np.array([4., 4., 4.])
+        externalPosition = np.array([3., 3., 3.])
+        length = 4.5
+        width = 2.
+        returnedRadiusOfEllipse = radiusOfEllipse(position, target, externalPosition, length, width)
+        expectedRadiusOfEllipse = 4.5
+        errorMessage = "Wrong value for radius of ellipse."
+        self.assertAlmostEqual(returnedRadiusOfEllipse, expectedRadiusOfEllipse, 7, errorMessage)
         pass
 
 
