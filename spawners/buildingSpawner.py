@@ -1,7 +1,9 @@
 #!/usr/bin/python
-from buildingParameters.buildingDimensions import *
-from buildingParameters.buildingType import *
-from worldParameters.worldDimensions import *
+
+from entities.buildings.buildingType import *
+from entities.buildings.buildingDimensions import *
+
+from world.worldParameters import *
 import matplotlib.pyplot as plt
 import matplotlib
 

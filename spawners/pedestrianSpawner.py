@@ -2,16 +2,21 @@
 
 import numpy as np
 
-from pedestrianParameters.pedestrianSettings import *
-from pedestrianParameters.standardPedestrian import *
+from entities.pedestrians.standardPedestrian import *
 
-def spawnRandomPedestrians():
-    standardPedestrians = [None] * nbStandardPedestrians
-    for i in range(nbStandardPedestrians):
-        standardPedestrians[i] = standardPedestrian('standardPedestrian', i, 'random')
-    return np.array(standardPedestrians)
 
-pedestrians = spawnRandomPedestrians()
+from spawners.worldSpawner import *
+
+class spawnPedestrians(worldSpawner):
+    def __init__(self, numberOfEntities):
+        super(spawnPedestrians, self).__init__(numberOfEntities)
+    def spawnRandomlyStandardPedestrians(self):
+        standardPedestrians = [None] * self.numberOfEntities
+        for i in range(self.numberOfEntities):
+            standardPedestrians[i] = standardPedestrian(self.numberOfEntities, 'standardPedestrian', i, 'random')
+        return np.array(standardPedestrians)
+
+# pedestrians = spawnRandomPedestrians()
 
         
         

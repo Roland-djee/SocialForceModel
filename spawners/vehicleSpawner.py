@@ -2,13 +2,17 @@
 
 import numpy as np
 
-from vehiclesParameters.vehicleSettings import *
-from vehiclesParameters.standardCar import *
+from entities.vehicles.vehicleSettings import *
+from entities.vehicles.standardCar import *
+from spawners.worldSpawner import *
 
-def spawnRandomCars():
-    standardCars = [None] * nbStandardCars
-    for i in range(nbStandardCars):
-            standardCars[i]  = standardCar('standardCar', i, 'random')
-    return np.array(standardCars)
+class spawnCars(worldSpawner):
+    def __init__(self, numberOfEntities):
+        super(spawnCars, self).__init__(numberOfEntities)
+    def spawnRandomlyStandardCars(self):
+        standardCars = [None] * self.numberOfEntities
+        for i in range(self.numberOfEntities):
+            standardCars[i]  = standardCar(self.numberOfEntities, 'standardCar', i, 'random')
+        return np.array(standardCars)
 
-cars = spawnRandomCars()
+# cars = spawnRandomCars()
