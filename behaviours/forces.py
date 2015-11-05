@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 from spawners.pedestrianSpawner import *
 from spawners.vehicleSpawner import *
-from pedestrianParameters.pedestrianSettings import *
+from entities.pedestrians.pedestrianSettings import *
 from propagateParameters import *
 from mathlib.ellipse import ellipseSemiMinorAxis, radiusOfEllipse
 
@@ -71,8 +71,8 @@ def extractExternalVariablesForPedestrians(pedestrians, currentPedestrian):
 # force = computePedPedRepulsiveForce(pedestrians, 5)
 # print force
 
-cars      = spawnRandomCars()
-force = computeCarCarRepulsiveForce(cars, 5)
+# cars      = spawnCars(5).spawnRandomlyStandardCars()
+# force = computeCarCarRepulsiveForce(cars, 5)
     
     
 #     F = np.zeros((len(r_ext),2))
