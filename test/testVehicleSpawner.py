@@ -9,7 +9,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 from worldParameters.worldDimensions import *
-from vehiclesParameters.vehicleSettings import *
+from entities.vehicles.vehicleSettings import *
 from spawners.vehicleSpawner import *
 
 class Test(unittest.TestCase):
@@ -22,13 +22,18 @@ class Test(unittest.TestCase):
     def tearDown(self):
         pass
 
-
     def testVehicleSpawnerWithRandomlyPlacedCars(self):
-        cars = spawnRandomCars()
+        numberOfCars = 15
+        cars = spawnCars(numberOfCars)
+        errorMessage = "Wrong input value for number of cars"
+        self.assertEqual(cars.numberOfEntities, numberOfCars, errorMessage)
+#         cars2 = spawnCars(numberOfCars).spawnRandomlyStandardCars()
+        cars2 = spawnCars(numberOfCars).spawnRandomlyStandardCars()
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        for i in range(nbStandardCars):
-            car1 = matplotlib.patches.Ellipse((cars[i].position[0], cars[i].position[1]), cars[i].length, cars[i].width, angle=0., color=cars[i].color)
+        for i in range(numberOfCars):
+#             car1 = matplotlib.patches.Ellipse((cars2[i].position[0], cars2[i].position[1]), cars2[i].length, cars2[i].width, angle=0., color=cars2[i].color)
+            car1 = matplotlib.patches.Ellipse((cars2[i].position[0], cars2[i].position[1]), cars2[i].length, cars2[i].width, angle=0., color=cars2[i].color)           
             ax.add_patch(car1)
 
         plt.xlim([-worldLength, worldLength])

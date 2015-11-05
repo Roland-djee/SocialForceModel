@@ -5,8 +5,8 @@ Created on 21 Oct 2015
 '''
 import unittest
 
-from vehiclesParameters.vehicleType import *
-from nltk.downloader import ErrorMessage
+from entities.vehicles.vehicleSettings import *
+from entities.vehicles.vehicleType import *
 
 
 class Test(unittest.TestCase):
@@ -21,25 +21,30 @@ class Test(unittest.TestCase):
 
 
     def testVehicleTypeWithCar(self):
-        vehicle = 'car'
+        numberOfEntities = 20
+        position = np.array([5., 5., 5.])
+        target = np.array([10., 10., 10.])
+        velocity = np.array([1., 1., 1.])
+        pedtype = 'Pedestrian'
+        id       = 10  
+        vehType = 'car'
         id = 10
-        initialConditions = 'random'
-        length = 4
-        width  = 2
-        height = 2
-        returnedCar = vehicleType(vehicle, id, initialConditions, length, width, height)
+        initialConditions = 'defined'
+        returnedCar = vehicle(numberOfEntities, vehType, id, initialConditions, position, target, velocity)
         errorMessage = "Wrong input value for vehicle"
-        self.assertEqual(returnedCar.type, vehicle, errorMessage)
+        self.assertEqual(returnedCar.type, vehType, errorMessage)
         errorMessage = "Wrong input value for id"
-        self.assertEqual(returnedCar.id, vehicle + str(id), errorMessage)
+        self.assertEqual(returnedCar.id, id, errorMessage)
         errorMessage = "Wrong input value for initial conditions"
         self.assertEqual(returnedCar.initialConditions, initialConditions, errorMessage)
-        errorMessage = "Wrong input value for initial length"
-        self.assertEqual(returnedCar.length, length, errorMessage)
-        errorMessage = "Wrong input value for initial width"
-        self.assertEqual(returnedCar.width, width, errorMessage)
-        errorMessage = "Wrong input value for initial height"
-        self.assertEqual(returnedCar.height, height, errorMessage)
+        errorMessage = "Wrong input value for number of Entities"
+        self.assertEqual(returnedCar.numberOfEntities, numberOfEntities, errorMessage)
+        errorMessage = "Wrong input value for position"
+        self.assertEqual(returnedCar.position.all(), position.all(), errorMessage)
+        errorMessage = "Wrong input value for target"
+        self.assertEqual(returnedCar.target.all(), target.all(), errorMessage)
+        errorMessage = "Wrong input value for velocity"
+        self.assertEqual(returnedCar.velocity.all(), velocity.all(), errorMessage)
         pass
 
 

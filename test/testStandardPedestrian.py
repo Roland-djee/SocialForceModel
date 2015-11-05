@@ -7,8 +7,7 @@ import unittest
 
 import numpy as np
 
-from pedestrianParameters.standardPedestrian import *
-from pedestrianParameters.pedestrianSettings import *
+from entities.pedestrians.standardPedestrian import *
 
 class Test(unittest.TestCase):
 
@@ -22,14 +21,18 @@ class Test(unittest.TestCase):
 
 
     def testStandardPedestrianWithPedestrian(self):
-        pedestrian = 'standardPedestrian'
+        numberOfEntities = 20
+        position = np.array([5., 5., 5.])
+        target = np.array([10., 10., 10.])
+        velocity = np.array([1., 1., 1.])
+        pedtype = 'standardPedestrian'
         id       = 10
-        initialConditions = 'random'
-        returnedPedestrian = standardPedestrian(pedestrian, id, initialConditions)
+        initialConditions = 'defined'
+        returnedPedestrian = standardPedestrian(numberOfEntities, pedtype, id, initialConditions, position, target, velocity)
         errorMessage = "Wrong input value for pedestrian"
-        self.assertEqual(returnedPedestrian.type, pedestrian, errorMessage)
+        self.assertEqual(returnedPedestrian.type, pedtype, errorMessage)
         errorMessage = "Wrong input value for id"
-        self.assertEqual(returnedPedestrian.id, 'Pedestrian'+str(id), errorMessage)
+        self.assertEqual(returnedPedestrian.id, id, errorMessage)
         errorMessage = "Wrong input value for initial conditions"
         self.assertEqual(returnedPedestrian.initialConditions, initialConditions, errorMessage)
 #         errorMessage = "Wrong input value for position"

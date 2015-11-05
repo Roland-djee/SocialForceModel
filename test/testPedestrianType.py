@@ -5,7 +5,7 @@ Created on 9 Oct 2015
 '''
 import unittest
 
-from pedestrianParameters.pedestrianType import *
+from entities.pedestrians.pedestrianType import *
 
 import numpy as np
 
@@ -18,16 +18,28 @@ class Test(unittest.TestCase):
         pass
 
     def testPedestrianTypeWithPedestrian(self):
-        pedestrian = 'pedestrian'
+        numberOfEntities = 20
+        position = np.array([5., 5., 5.])
+        target = np.array([10., 10., 10.])
+        velocity = np.array([1., 1., 1.])
+        pedtype = 'Pedestrian'
         id       = 10  
-        initialConditions = 'random'
-        returnedPedestrian = pedestrianType(pedestrian, id, initialConditions)
+        initialConditions = 'defined'
+        returnedPedestrian = pedestrian(numberOfEntities, pedtype, id, initialConditions, position, target, velocity)
+        errorMessage = "Wrong input value for number of entities"
+        self.assertEqual(returnedPedestrian.numberOfEntities, numberOfEntities, errorMessage)
+        errorMessage = "Wrong input value for position"
+        self.assertEqual(returnedPedestrian.position.all(), position.all(), errorMessage)
+        errorMessage = "Wrong input value for target"
+        self.assertEqual(returnedPedestrian.target.all(), target.all(), errorMessage)
+        errorMessage = "Wrong input value for velocity"
+        self.assertEqual(returnedPedestrian.velocity.all(), velocity.all(), errorMessage)
         errorMessage = "Wrong input value for pedestrian"
-        self.assertEqual(returnedPedestrian.type, pedestrian, errorMessage)
+        self.assertEqual(returnedPedestrian.type, pedtype, errorMessage)
         errorMessage = "Wrong input value for id"
-        self.assertEqual(returnedPedestrian.id, 'Pedestrian'+str(id), errorMessage)
+        self.assertEqual(returnedPedestrian.id, id, errorMessage)
         errorMessage = "Wrong input value for initial conditions"
-        self.assertEqual(returnedPedestrian.initialConditions, 'random', errorMessage)
+        self.assertEqual(returnedPedestrian.initialConditions, initialConditions, errorMessage)
         pass
 
 
