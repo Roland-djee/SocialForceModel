@@ -1,2 +1,5 @@
 *.pyc
-/pedestrian.mp4
+
+*.mp4
+
+*~
