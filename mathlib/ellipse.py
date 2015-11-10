@@ -13,7 +13,6 @@ def ellipseSemiMinorAxis(dt, externalVelocity, position, externalPosition, exter
     eBeta      = normalisedDesiredDirection(externalTarget, externalPosition)
     sBeta      = np.linalg.norm(externalVelocity) * dt
     b          = b + np.linalg.norm(rAlphaBeta - sBeta * eBeta)
-    print b, sBeta, rAlphaBeta
     return sqrt(b**2 - sBeta**2) * 0.5
 
 def radiusOfEllipse(position, target, externalPosition, length, width):
