@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-nbStandardCars = 1
+nbStandardCars = 10
 standardCarLength = 4.5
 standardCarWidth  = 2.
 standardCarHeight = 0. 
