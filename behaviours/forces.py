@@ -12,55 +12,93 @@ from propagateParameters import *
 from mathlib.ellipse import ellipseSemiMinorAxis, radiusOfEllipse
 
 from mathlib.vectors import *
+from mathlib.forces import pedestrian_repulsive_force
 
-def computeCarTargetAttractiveForce(cars, currentCar):
-    '''Returns the attractive force to a destination'''
-    eAlpha  = normalisedDesiredDirection(cars[currentCar].target, cars[currentCar].position)
-    vAlpha0 = eAlpha * cars[currentCar].desiredVelocity
-    return (vAlpha0 - cars[currentCar].velocity) / cars[currentCar].relaxationTime
+def computeAllInteractingForces(currentEntity, pedestrians, cars, walls, buildings):
+    if currentEntity.type == 'standardPedestrian':
+        force = computePedestrianForces(currentEntity, pedestrians, cars)
+    elif currentEntity.type == 'standardCar':
+        force = computeCarForces(currentEntity, cars, pedestrians)
+        
+#     pedestrianPedestrianRepulsiveForce = np.zeros(3)
+        
+#     pedestrianPedestrianRepulsiveForce = np.array([0., 0., 0.])
+#     print pedestrianPedestrianRepulsiveForce
+#     sys.exit()
+#     pedestrianWallRepulsiveForce       = computePedWallRepulsiveForce()
+#     pedestrianVehicleRepulsiveForce    = computePedVehicleRepulsiveForce()
+#     force = pedestrianPedestrianRepulsiveForce + pedestrianWallRepulsiveForce + pedestrianVehicleRepulsiveForce
+#     return force
+#     print pedestrianPedestrianRepulsiveForce
+#     force = pedestrianTargetAttractiveForce + pedestrianPedestrianRepulsiveForce
+    return force
 
-def computeCarCarRepulsiveForce(cars, currentCar):
-    ''' Returns the repulsive force between all other cars and the current one, discarding the form factor [Anvari et al.]'''
-    externalVelocities, externalPositions, externalTargets, externalIds, normalizedAlphaBetaVectors = extractExternalVariablesForCars(cars, currentCar)
-    radiusesOfEllipses = np.array([radiusOfEllipse(cars[currentCar].position, cars[currentCar].target, eP, cars[currentCar].length, cars[currentCar].width) for eP in externalPositions]) 
-#     print radiusesOfEllipses
-    radiusesOfEllipsesFromExternalCars = [radiusOfEllipse(eP, eT, cars[currentCar].position, cars[eC].length, cars[eC].width) for eP, eT, eC in zip(externalPositions, externalTargets, externalIds)]
-#     print radiusesOfEllipsesFromExternalCars
-    distanceBetweenCentersOfCars = [np.linalg.norm(eC - cars[currentCar].position) for eC in externalPositions]
-    sumOfRadiuses = radiusesOfEllipses + radiusesOfEllipsesFromExternalCars - distanceBetweenCentersOfCars
-#     print sumOfRadiuses
-#     return 
+def computeCarForces(currentEntity, cars, pedestrians):
+    carTargetAttractiveForce = computeCarTargetAttractiveForce(currentEntity, cars)
+    carCarRepulsiveForce     = computeCarCarRepulsiveForce(currentEntity, cars)
+    return carTargetAttractiveForce + carCarRepulsiveForce
+
+def computePedestrianForces(currentEntity, pedestrians, cars):
+    pedestrianTargetAttractiveForce    = computePedestrianTargetAttractiveForce(currentEntity, pedestrians)
+    pedestrianPedestrianRepulsiveForce = computePedPedRepulsiveForce(currentEntity, pedestrians)
+    pedestrianCarRepulsiveForce        = computePedCarRepulsiveForce(currentEntity, cars)
+    return pedestrianTargetAttractiveForce + pedestrianPedestrianRepulsiveForce + pedestrianCarRepulsiveForce
+
+def computePedCarRepulsiveForce(currentEntity, cars):
+    externalVelocities, externalPositions, externalTargets, externalIds, normalizedAlphaBetaVectors = extractExternalVariablesForCars(currentEntity, cars)
+    radiusesOfEllipsesFromExternalCars = np.array([radiusOfEllipse(eP, eT, currentEntity.position, cars[eC].length, cars[eC].width) for eP, eT, eC in zip(externalPositions, externalTargets, externalIds)])
+    distanceBetweenPedestrianAndCars   = np.array([np.linalg.norm(eC - currentEntity.position) for eC in externalPositions])
+    radiusOfPedestrian = 1.
+    sumOfRadiuses = radiusOfPedestrian + radiusesOfEllipsesFromExternalCars - distanceBetweenPedestrianAndCars
     return amplitudeAlphaU * sum([exp(sumOfRadiuses[i]/BAlphaU) * normalizedAlphaBetaVectors[i] for i in range(len(sumOfRadiuses))])
 
-def computePedestrianTargetAttractiveForce(pedestrians, currentPedestrian):
+def computeCarTargetAttractiveForce(currentCar, cars):
     '''Returns the attractive force to a destination'''
-    eAlpha  = normalisedDesiredDirection(pedestrians[currentPedestrian].target, pedestrians[currentPedestrian].position)
-    vAlpha0 = eAlpha * pedestrians[currentPedestrian].desiredVelocity
-    return (vAlpha0 - pedestrians[currentPedestrian].velocity) / pedestrians[currentPedestrian].relaxationTime
+    eAlpha  = normalisedDesiredDirection(currentCar.target, currentCar.position)
+    vAlpha0 = eAlpha * currentCar.desiredVelocity
+    return (vAlpha0 - currentCar.velocity) / currentCar.relaxationTime
 
-def computePedPedRepulsiveForce(pedestrians, currentPedestrian):
+def computeCarCarRepulsiveForce(currentCar, cars):
+    ''' Returns the repulsive force between all other cars and the current one, discarding the form factor [Anvari et al.]'''
+    externalVelocities, externalPositions, externalTargets, externalIds, normalizedAlphaBetaVectors = extractExternalVariablesForCars(currentCar, cars)
+    radiusesOfEllipses = np.array([radiusOfEllipse(currentCar.position, currentCar.target, eP, currentCar.length, currentCar.width) for eP in externalPositions]) 
+    radiusesOfEllipsesFromExternalCars = np.array([radiusOfEllipse(eP, eT, currentCar.position, cars[eC].length, cars[eC].width) for eP, eT, eC in zip(externalPositions, externalTargets, externalIds)])
+    distanceBetweenCentersOfCars = [np.linalg.norm(eC - currentCar.position) for eC in externalPositions]
+    sumOfRadiuses = radiusesOfEllipses + radiusesOfEllipsesFromExternalCars - distanceBetweenCentersOfCars
+    return amplitudeAlphaU * sum([exp(sumOfRadiuses[i]/BAlphaU) * normalizedAlphaBetaVectors[i] for i in range(len(sumOfRadiuses))])
+
+def computePedestrianTargetAttractiveForce(currentPedestrian, pedestrians):
+    '''Returns the attractive force to a destination'''
+    eAlpha  = normalisedDesiredDirection(currentPedestrian.target, currentPedestrian.position)
+    vAlpha0 = eAlpha * currentPedestrian.desiredVelocity
+    return (vAlpha0 - currentPedestrian.velocity) / currentPedestrian.relaxationTime
+
+def computePedPedRepulsiveForce(currentPedestrian, pedestrians):
     ''' Returns the repulsive force between all other pedestrians and the current one'''
-    externalVelocities, externalPositions, externalTargets, normalizedAlphaBetaVectors = extractExternalVariablesForPedestrians(pedestrians, currentPedestrian)
-    semiMinorAxes = np.array([ellipseSemiMinorAxis(dt, eV, pedestrians[currentPedestrian].position, eP, eT) for eV, eP, eT in zip(externalVelocities, externalPositions, externalTargets)]) 
+    externalVelocities, externalPositions, externalTargets, normalizedAlphaBetaVectors = extractExternalVariablesForPedestrians(currentPedestrian, pedestrians)
+    semiMinorAxes = np.array([ellipseSemiMinorAxis(dt, eV, currentPedestrian.position, eP, eT) for eV, eP, eT in zip(externalVelocities, externalPositions, externalTargets)]) 
     return amplitude * sum([exp(-semiMinorAxes[i]/sigma) * normalizedAlphaBetaVectors[i] for i in range(len(semiMinorAxes))])
 
-def extractExternalVariablesForCars(cars, currentCar):
+def extractExternalVariablesForCars(currentEntity, cars):
     ''' Extract the nbCars-1 other variables necessary'''
-    excludingCar = 'standardCar' + str(currentCar)
+    if currentEntity.type == 'standardCar':
+        excludingCar = currentEntity.id
+    elif currentEntity.type == 'standardPedestrian':
+        excludingCar = -1       
     externalVelocities = [car.velocity for car in cars if car.id != excludingCar]
     externalPositions  = [car.position for car in cars if car.id != excludingCar]
     externalTargets    = [car.target for car in cars if car.id != excludingCar]
-    externalIds        = [car for car in range(len(cars)) if car != currentCar]
-    normalizedAlphaBetaVectors = [normalisedDesiredDirection(cars[currentCar].position, externalPosition) for externalPosition in externalPositions]
+    externalIds        = [car.id for car in cars if car.id != excludingCar]
+    normalizedAlphaBetaVectors = [normalisedDesiredDirection(currentEntity.position, externalPosition) for externalPosition in externalPositions]
     return externalVelocities, externalPositions, externalTargets, externalIds, normalizedAlphaBetaVectors
     
-def extractExternalVariablesForPedestrians(pedestrians, currentPedestrian):
+def extractExternalVariablesForPedestrians(currentEntity, pedestrians):
     ''' Extract the nbPedestrian-1 other variables necessary'''
-    excludingPedestrian = 'Pedestrian' + str(currentPedestrian)
+    excludingPedestrian = currentEntity.id
     externalVelocities = [pedestrian.velocity for pedestrian in pedestrians if pedestrian.id != excludingPedestrian]
     externalPositions  = [pedestrian.position for pedestrian in pedestrians if pedestrian.id != excludingPedestrian]
     externalTargets    = [pedestrian.target   for pedestrian in pedestrians if pedestrian.id != excludingPedestrian]
-    normalizedAlphaBetaVectors = [normalisedDesiredDirection(pedestrians[currentPedestrian].position, externalPosition) for externalPosition in externalPositions]
+    normalizedAlphaBetaVectors = [normalisedDesiredDirection(currentEntity.position, externalPosition) for externalPosition in externalPositions]
     return externalVelocities, externalPositions, externalTargets, normalizedAlphaBetaVectors
     
 # pedestrians      = spawnRandomPedestrians()
