@@ -10,3 +10,5 @@ v0              = 13.9        # Average desired speed [m/s]
 tauAlpha        = 0.5         # Relaxation time [s]
 BAlphaU         = 0.3         # Potential damping parameter [m]
 amplitudeAlphaU = 10.         # Car-car repulsive force amplitude [m^-1 s^-2]
+
+carStopAcceptance  = 0.5    # Acceptance to stop at a destination point

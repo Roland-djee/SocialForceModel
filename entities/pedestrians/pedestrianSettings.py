@@ -9,3 +9,5 @@ tauAlpha  = 0.5         # Relaxation time [s]
 V12       = 10         # Repulsive potential amplitude [m^2 s^-2]
 sigma     = 0.3         # Potential damping parameter [m]
 amplitude = V12 / sigma # Pedestrian-pedestrian repulsive force amplitude [m^-1 s^-2]
+
+pedestrianStopAcceptance = 0.1    # Acceptance to stop at a destination point
