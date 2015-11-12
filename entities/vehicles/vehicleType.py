@@ -32,4 +32,5 @@ class vehicle(entities):
             self.position = position
             self.velocity = velocity
             self.target   = target
-        self.color             = 'green' 
+        self.color             = 'green'
+        self.movementStatus    = 'driving'

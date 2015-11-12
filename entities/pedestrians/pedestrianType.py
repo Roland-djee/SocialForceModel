@@ -1,6 +1,7 @@
 #!/usr/bin/python
 from entities.entities import *
 import numpy as np
+
 from pedestrianSettings import *
 
 from world.worldParameters import *
@@ -33,5 +34,5 @@ class pedestrian(entities):
             self.position = position
             self.velocity = velocity
             self.target   = target
-            
         self.color             = 'blue' 
+        self.movementStatus    = 'walking'
