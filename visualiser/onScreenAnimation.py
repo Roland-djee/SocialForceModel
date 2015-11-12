@@ -11,8 +11,10 @@ from behaviours.propagateDynamics import *
 
 from world.worldParameters import *
 
+from mathlib.mathFunctions import *
+
 nbStandardPedestrians = 10
-nbStandardCars =5
+nbStandardCars = 5
 
 pedestrians = spawnPedestrians(nbStandardPedestrians).spawnRandomlyStandardPedestrians()
 cars        = spawnCars(nbStandardCars).spawnRandomlyStandardCars()
@@ -33,6 +35,9 @@ newPosition = np.zeros((nbStandardPedestrians,3))
 newVelocityCars = np.zeros((nbStandardCars,3)) 
 newPositionCars = np.zeros((nbStandardCars,3)) 
 
+walls = 0.
+buildings = 0.
+
 for t in time:
     plt.cla()
     plt.xlim([-worldLength, worldLength])
@@ -40,7 +45,7 @@ for t in time:
     for currentPedestrian in range(nbStandardPedestrians):
         newVelocity[currentPedestrian], newPosition[currentPedestrian] = propagateInTime(t, pedestrians[currentPedestrian], pedestrians, cars, walls, buildings)
     for currentPedestrian in range(nbStandardPedestrians):
-        pedestrians[currentPedestrian].velocity = newVelocity[currentPedestrian]
+        pedestrians[currentPedestrian].velocity = newVelocity[currentPedestrian] * pedestrianStopAtDestination(newPosition[currentPedestrian] - pedestrians[currentPedestrian].target)
         pedestrians[currentPedestrian].position = newPosition[currentPedestrian]
     for i in range(nbStandardPedestrians):         
         plt.plot(pedestrians[i].position[0], pedestrians[i].position[1], 'bo')  
@@ -48,7 +53,7 @@ for t in time:
     for currentCar in range(nbStandardCars):
         newVelocityCars[currentCar], newPositionCars[currentCar] = propagateInTime(t, cars[currentCar], pedestrians, cars, walls, buildings)
     for currentCar in range(nbStandardCars):
-        cars[currentCar].velocity = newVelocityCars[currentCar]
+        cars[currentCar].velocity = newVelocityCars[currentCar] * carStopAtDestination(newPositionCars[currentCar] - cars[currentCar].target)
         cars[currentCar].position = newPositionCars[currentCar]
         angle = acos(np.dot(cars[currentCar].velocity, np.array([1., 0., 0.]))/np.linalg.norm(cars[currentCar].velocity))
         if (cars[currentCar].velocity[1] < 0.):
