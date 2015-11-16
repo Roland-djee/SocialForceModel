@@ -40,7 +40,7 @@ def animate(frames):
             carEllipses[i].set_visible(True) 
     t = time[frames]
     for currentPedestrian in range(nbStandardPedestrians):
-        newVelocity[currentPedestrian], newPosition[currentPedestrian] = propagateInTime(t, pedestrians[currentPedestrian], pedestrians, cars, walls, buildings)
+        newVelocity[currentPedestrian], newPosition[currentPedestrian] = propagateInTime(dt, pedestrians[currentPedestrian], pedestrians, cars, walls, buildings)
     for currentPedestrian in range(nbStandardPedestrians):
         pedestrians[currentPedestrian].velocity = newVelocity[currentPedestrian]
         pedestrians[currentPedestrian].position = newPosition[currentPedestrian]
@@ -49,7 +49,7 @@ def animate(frames):
     pedDots.set_data(x, y)
      
     for currentCar in range(nbStandardCars):
-        newVelocityCars[currentCar], newPositionCars[currentCar] = propagateInTime(t, cars[currentCar], pedestrians, cars, walls, buildings)
+        newVelocityCars[currentCar], newPositionCars[currentCar] = propagateInTime(dt, cars[currentCar], pedestrians, cars, walls, buildings)
     for currentCar in range(nbStandardCars):
         cars[currentCar].velocity = newVelocityCars[currentCar]
         cars[currentCar].position = newPositionCars[currentCar]
