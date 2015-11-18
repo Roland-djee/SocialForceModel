@@ -15,8 +15,8 @@ class spawnPedestrians(worldSpawner):
         for i in range(self.numberOfEntities):
             standardPedestrians[i] = standardPedestrian(self.numberOfEntities, 'standardPedestrian', i, 'random')
         return np.array(standardPedestrians)
-
-# pedestrians = spawnRandomPedestrians()
-
-        
-        
+    def spawnStandardPedestriansInArea(self, bottomLeftStartArea, upperRightStartArea, bottomLeftEndArea, upperRightEndArea):
+        standardPedestrians = [None] * self.numberOfEntities
+        for i in range(self.numberOfEntities):
+            standardPedestrians[i] = standardPedestrian(self.numberOfEntities, 'standardPedestrian', i, 'area', bottomLeftStartArea, upperRightStartArea, bottomLeftEndArea, upperRightEndArea)
+        return np.array(standardPedestrians)

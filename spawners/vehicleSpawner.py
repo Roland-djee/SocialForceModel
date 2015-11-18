@@ -14,5 +14,8 @@ class spawnCars(worldSpawner):
         for i in range(self.numberOfEntities):
             standardCars[i]  = standardCar(self.numberOfEntities, 'standardCar', i, 'random')
         return np.array(standardCars)
-
-# cars = spawnRandomCars()
+    def spawnStandardCarsInArea(self, bottomLeftStartArea, upperRightStartArea, bottomLeftEndArea, upperRightEndArea):
+        standardCars = [None] * self.numberOfEntities
+        for i in range(self.numberOfEntities):
+            standardCars[i] = standardCar(self.numberOfEntities, 'standardCar', i, 'area', bottomLeftStartArea, upperRightStartArea, bottomLeftEndArea, upperRightEndArea)
+        return np.array(standardCars)
