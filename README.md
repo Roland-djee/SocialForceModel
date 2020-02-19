@@ -18,6 +18,16 @@ to set a crude model of environment using defined walls and buildings.
 Installation
 ============
 
+C++ core
+--------
+
+To build and install the C++ core, in the ``cpp/`` directory, run::
+
+  mkdir build
+  cd build
+  cmake ..
+  make install
+
 Requirements:
 
 - Git
