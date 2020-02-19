@@ -23,10 +23,12 @@ C++ core
 
 To build and install the C++ core, in the ``cpp/`` directory, run::
 
+```sh
   mkdir build
   cd build
   cmake ..
   make install
+```
 
 Requirements:
 
